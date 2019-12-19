@@ -74,31 +74,32 @@ class ViewModel {
 
     /// See `CMTextMarkup.h` for all options
     func setRedTextColor() {
-        addTextMarkupAttributes([kCMTextMarkupAttribute_ForegroundColorARGB as String: [1, 1, 0, 0]])
+        addTextMarkupAttributes([kCMTextMarkupAttribute_ForegroundColorARGB: [1, 1, 0, 0]])
     }
 
     /// See `CMTextMarkup.h` for all options
     func setBlueTextColor() {
-        addTextMarkupAttributes([kCMTextMarkupAttribute_ForegroundColorARGB as String: [1, 0, 0, 1]])
+        addTextMarkupAttributes([kCMTextMarkupAttribute_ForegroundColorARGB: [1, 0, 0, 1]])
     }
 
     /// See `CMTextMarkup.h` for all options
     func setItalicText() {
-        addTextMarkupAttributes([kCMTextMarkupAttribute_ItalicStyle as String: kCFBooleanTrue!])
+        addTextMarkupAttributes([kCMTextMarkupAttribute_ItalicStyle: kCFBooleanTrue!])
     }
 
     /// See `CMTextMarkup.h` for all options
     func setTextHeightMultiplier(_ multiplier: Double) {
         let size = multiplier * 100 as CFNumber
-        addTextMarkupAttributes([kCMTextMarkupAttribute_BaseFontSizePercentageRelativeToVideoHeight as String: size])
+        addTextMarkupAttributes([kCMTextMarkupAttribute_BaseFontSizePercentageRelativeToVideoHeight: size])
     }
 
     /// See `CMTextMarkup.h` for all options
-    func addTextMarkupAttributes(_ attributes: [String: Any]) {
+    func addTextMarkupAttributes(_ attributes: [CFString: Any]) {
         var currentAttributes = playerItem.textStyleRules?.first?.textMarkupAttributes ?? [:]
         for attribute in attributes {
-            currentAttributes[attribute.key] = attribute.value
+            currentAttributes[attribute.key as String] = attribute.value
         }
-        playerItem.textStyleRules = [AVTextStyleRule(textMarkupAttributes: currentAttributes)!]
+        guard let styleRule = AVTextStyleRule(textMarkupAttributes: currentAttributes) else { return }
+        playerItem.textStyleRules = [styleRule]
     }
 }
