@@ -59,15 +59,15 @@ class ViewModel {
     }
 
     /// Set captions using a locale (ex. pass Locale(identifier: "en") for English)
-    func setSubtitles(locale: Locale) {
-        var message = "No english subtitles found"
+    func setCaptions(locale: Locale) {
+        var message = "No captions found for locale \(locale)"
         defer { print(message) }
 
         guard let group = asset.mediaSelectionGroup(forMediaCharacteristic: .legible) else { return }
 
         let options = AVMediaSelectionGroup.mediaSelectionOptions(from: group.options, with: locale)
         if let option = options.first {
-            message = "Found english subtitles"
+            message = "Captions found for locale \(locale)"
             playerItem.select(option, in: group)
         }
     }
