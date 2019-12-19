@@ -10,15 +10,9 @@ import AVFoundation
 import UIKit
 
 class ViewModel {
-    let urls = [
-        URL(string: "https://mnmedias.api.telequebec.tv/m3u8/29880.m3u8")!,
-        URL(string: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8")!,
-        URL(string: "https://mnmedias.api.telequebec.tv/m3u8/29880.m3u8")!,
-        URL(string: "http://184.72.239.149/vod/smil:BigBuckBunny.smil/playlist.m3u8")!,
-        URL(string: "http://www.streambox.fr/playlists/test_001/stream.m3u8")!
-    ]
+    let url = URL(string: "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8")!
 
-    lazy var asset = AVAsset(url: urls[1])
+    lazy var asset = AVAsset(url: url)
     lazy var playerItem = AVPlayerItem(asset: asset)
     lazy var player: AVPlayer = {
         let player = AVPlayer(playerItem: playerItem)
@@ -58,7 +52,7 @@ class ViewModel {
         playerItem.select(option, in: legibleCharacteristic)
     }
 
-    // Set captions using a locale (ex. pass Locale(identifier: "en") for English)
+    /// Set captions using a locale (ex. pass Locale(identifier: "en") for English)
     func setSubtitles(locale: Locale) {
         var message = "No english subtitles found"
         defer { print(message) }
@@ -72,9 +66,33 @@ class ViewModel {
         }
     }
 
-    func setTextStyleRules() {
-        playerItem.textStyleRules = [AVTextStyleRule(textMarkupAttributes: [
-            kCMTextMarkupAttribute_ForegroundColorARGB as String: [1, 1, 0, 0]
-        ])!]
+    /// See `CMTextMarkup.h` for all options
+    func setRedTextColor() {
+        addTextMarkupAttributes([kCMTextMarkupAttribute_ForegroundColorARGB as String: [1, 1, 0, 0]])
+    }
+
+    /// See `CMTextMarkup.h` for all options
+    func setBlueTextColor() {
+        addTextMarkupAttributes([kCMTextMarkupAttribute_ForegroundColorARGB as String: [1, 0, 0, 1]])
+    }
+
+    /// See `CMTextMarkup.h` for all options
+    func setItalicText() {
+        addTextMarkupAttributes([kCMTextMarkupAttribute_ItalicStyle as String: kCFBooleanTrue!])
+    }
+
+    /// See `CMTextMarkup.h` for all options
+    func setTextHeightMultiplier(_ multiplier: Double) {
+        let size = multiplier * 100 as CFNumber
+        addTextMarkupAttributes([kCMTextMarkupAttribute_BaseFontSizePercentageRelativeToVideoHeight as String: size])
+    }
+
+    /// See `CMTextMarkup.h` for all options
+    func addTextMarkupAttributes(_ attributes: [String: Any]) {
+        var currentAttributes = playerItem.textStyleRules?.first?.textMarkupAttributes ?? [:]
+        for attribute in attributes {
+            currentAttributes[attribute.key] = attribute.value
+        }
+        playerItem.textStyleRules = [AVTextStyleRule(textMarkupAttributes: currentAttributes)!]
     }
 }

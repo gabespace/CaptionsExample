@@ -11,7 +11,8 @@ import UIKit
 
 class ViewController: UIViewController {
     let playerView = PlayerView()
-    let stackView = UIStackView()
+    let languageStackView = UIStackView()
+    let textStyleStackView = UIStackView()
 
     let viewModel = ViewModel()
     
@@ -19,15 +20,15 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         setUpPlayerView()
-        setUpCaptionsSelector()
+        setUpSelectors()
 
         viewModel.listAvailableMediaOptions()
-        viewModel.setTextStyleRules()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.player.seek(to: CMTime(seconds: 120, preferredTimescale: .max))
+        viewModel.setTextHeightMultiplier(0.05)
         viewModel.play()
     }
 
@@ -45,17 +46,44 @@ class ViewController: UIViewController {
         ])
     }
 
-    func setUpCaptionsSelector() {
-        stackView.axis = .vertical
-        stackView.spacing = 8
+    func setUpSelectors() {
+        languageStackView.axis = .vertical
+        languageStackView.spacing = 8
 
         viewModel.captionOptionsDisplayNames.forEach { name in
             let button = UIButton()
             button.setTitle(name, for: .normal)
             button.setTitleColor(.black, for: .normal)
-            button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-            stackView.addArrangedSubview(button)
+            button.addTarget(self, action: #selector(captionButtonTapped), for: .touchUpInside)
+            languageStackView.addArrangedSubview(button)
         }
+
+        textStyleStackView.axis = .vertical
+        textStyleStackView.spacing = 8
+
+        let redButton = UIButton()
+        redButton.setTitle("Red", for: .normal)
+        redButton.setTitleColor(.red, for: .normal)
+        redButton.addTarget(self, action: #selector(toggleRedStyle), for: .touchUpInside)
+
+        let blueButton = UIButton()
+        blueButton.setTitle("Blue", for: .normal)
+        blueButton.setTitleColor(.blue, for: .normal)
+        blueButton.addTarget(self, action: #selector(toggleBlueStyle), for: .touchUpInside)
+
+        let italicsButton = UIButton()
+        italicsButton.setTitle("Italics", for: .normal)
+        italicsButton.setTitleColor(.black, for: .normal)
+        italicsButton.addTarget(self, action: #selector(toggleItalicsStyle), for: .touchUpInside)
+
+        textStyleStackView.addArrangedSubview(redButton)
+        textStyleStackView.addArrangedSubview(blueButton)
+        textStyleStackView.addArrangedSubview(italicsButton)
+
+        let stackView = UIStackView(arrangedSubviews: [languageStackView, textStyleStackView])
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 10
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
@@ -65,8 +93,20 @@ class ViewController: UIViewController {
         ])
     }
 
-    @objc func buttonTapped(_ button: UIButton) {
+    @objc func captionButtonTapped(_ button: UIButton) {
         let captionOptionName = button.currentTitle!
         viewModel.setCaption(named: captionOptionName)
+    }
+
+    @objc func toggleRedStyle() {
+        viewModel.setRedTextColor()
+    }
+
+    @objc func toggleBlueStyle() {
+        viewModel.setBlueTextColor()
+    }
+
+    @objc func toggleItalicsStyle() {
+        viewModel.setItalicText()
     }
 }
