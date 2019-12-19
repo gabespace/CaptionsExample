@@ -6,6 +6,12 @@
 //  Copyright © 2019 Gabe. All rights reserved.
 //
 
+// Helpful links:
+// https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/UsingHTTPLiveStreaming/UsingHTTPLiveStreaming.html
+// https://developer.apple.com/documentation/avfoundation/media_assets_playback_and_editing/adding_subtitles_and_alternative_audio_tracks
+// https://developer.apple.com/library/archive/qa/qa1794/_index.html
+// https://bitmovin.com/mpeg-dash-hls-examples-sample-streams/
+
 import AVFoundation
 import UIKit
 
